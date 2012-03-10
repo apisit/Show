@@ -117,13 +117,32 @@ this.now.uuid = ++primaryKey;
 }
 );
  
+ everyone.now.beginDrawServer=function(position) {
+ everyone.now.beginDrawClient(position);
+ };
+ everyone.now.endDrawServer=function() {
+ everyone.now.endDrawClient();
+ };
+ 
+ everyone.now.syncDraw = function( position ){
+  console.log( "drawing" );
+ // Now that we have the new position, we want to broadcast
+ // this back to every client except the one that sent it in
+ // the first place! As such, we want to perform a server-side
+ // filtering of the clients. To do this, we will use a filter
+ // method which filters on the UUID we assigned at connection
+ // time.
+ everyone.now.filterUpdateDraw( this.now.uuid, position );
+
+ };
+  
  
 // Add a broadcast function to *every* client that they can call
 // when they want to sync the position of the draggable target.
 // In the context of this callback, "this" refers to the
 // specific client that is communicating with the server.
 everyone.now.syncPosition = function( position ){
- 
+  console.log( "everyone.now.syncPosition" );
 // Now that we have the new position, we want to broadcast
 // this back to every client except the one that sent it in
 // the first place! As such, we want to perform a server-side
@@ -151,12 +170,41 @@ if (this.now.uuid == masterUUID){
 return;
  
 }
+
+
+
  
 // If we've made it this far, then this client is a slave
 // client, not a master client.
 everyone.now.updatePosition( position );
  
 };
+
+
+
+everyone.now.filterUpdateDraw = function( masterUUID, position ){
+ console.log( "filter draw" );
+// Make sure this client is NOT the same client as the one
+// that sent the original position broadcast.
+if (this.now.uuid == masterUUID){
+ 
+// Return out of guard statement - we don't want to
+// send an update message back to the sender.
+return;
+ 
+}
+
+
+
+ 
+// If we've made it this far, then this client is a slave
+// client, not a master client.
+everyone.now.updateDraw( position );
+ 
+};
+ 
+
+
  
 })();
  
@@ -167,4 +215,4 @@ everyone.now.updatePosition( position );
  
 // Write debugging information to the console to indicate that
 // the server has been configured and is up and running.
-sys.puts( "Server is running on 8080" );
+sys.puts( "Server is running1111 on 8080" );
