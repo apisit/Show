@@ -291,12 +291,11 @@ var Sketch = (function() {
 		}
 	}
 	
-	now.remoteDraw = function( dataLines ){
-	lines=dataLines;
-	context.clearRect( 0, 0, canvas.width, canvas.height );
+	now.remoteDraw = function( addedLine ){
 
-	render();
-
+	renderLine(addedLine);
+	lines.push(addedLine);
+	console.log("draw from server");
 	};
 	
 	
@@ -458,6 +457,7 @@ var Sketch = (function() {
 				// CTRL for Win and CMD for Mac
 				if( event.ctrlKey || event.metaKey ) {
 					lines.pop();
+					render();
 				}
 				break;
 		}
@@ -532,11 +532,12 @@ var Sketch = (function() {
 		
 		//	now.sendToServer(lines);
 		// Start a new line
-		context.clearRect( 0, 0, canvas.width, canvas.height );
+			
+			
+			now.sendToServer(lines[lines.length-1]);
 		
+			
 			render();
-			now.sendToServer(lines);
-			console.log(lines[0].points);
 	}
 	
 	function scrollPosition() {
@@ -842,10 +843,83 @@ var Sketch = (function() {
 		
 	}
 	
+	
+	//new render method with parameter
+	
+	function renderLine(line) {
+		
+		
+		
+			var thickness = line.thickness;
+		
+			var perspective = wrapNumber( ( globalPerspective - line.perspective ) * 2, 2 );
+			var dashed = line.dashed;
+			var points =line.points;
+		//	console.log(points);
+			var p1 = points[0];
+			var p2 = points[1];
+			
+			// Only begin the path if we're drawing on solid line
+			if ( !dashed ) {
+				context.beginPath();
+			}
+		
+			for (var i = 1, len = points.length; i < len; i++) {
+					
+				// If we're drawing a dashed line, we need to begin a new
+				// path on every loop
+				if ( dashed ) {
+					context.beginPath();
+				}
+				
+				// If the point's position is within x distance of its normal,
+				// we give it another impulse based on the current amplitude
+				/*if (distanceBetween(p1.position, p1.normal) < 1) {
+					p1.position.x += (Math.random() - 0.5) * amplitude;
+					p1.position.y += (Math.random() - 0.5) * amplitude;
+				}*/
+				
+				// Ease position towards the normal at a speed based on elasticity
+			//	p1.position.x += (p1.normal.x - p1.position.x) * elasticity;
+			//	p1.position.y += (p1.normal.y - p1.position.y) * elasticity;
+				
+				var p1x = p1.position.x;
+				var p2x = p2.position.x;
+				
+				// Adjust the position based on depth
+				p1x += perspective * ( p1.position.x - ( world.width * 0.5 ) ) * ( perspective < 0 ? 1 : -1 );
+				p2x += perspective * ( p2.position.x - ( world.width * 0.5 ) ) * ( perspective < 0 ? 1 : -1 );
+				
+				if( i == 1 || dashed ) {
+					context.moveTo(p1x, p1.position.y);
+				}
+				
+				// Draw a smooth curve between p1 and p2
+				context.quadraticCurveTo(p1x, p1.position.y, p1x + (p2x - p1x) / 2, p1.position.y + (p2.position.y - p1.position.y) / 2);
+				//context.lineTo(p1x,p2.position.y);
+				p1 = points[i];
+				p2 = points[i + 1];
+				
+				// If this is a dashed line, it needs to be drawn repeatedly
+				// in this loop
+				if( dashed ) {
+					stroke( ( thickness * ( 1 ) ).toFixed(2) );
+				}
+			}
+			
+			// If we're drawing a solid line, close it now
+			if( !dashed ) {
+				stroke( thickness );
+			}
+			
+		
+	}
+	
 	/**
 	 * Updates the world by stepping forward one frame.
 	 */
 	function render() {
+			context.clearRect( 0, 0, canvas.width, canvas.height );
 		
 		var lineCount = lines.length;
 		console.log(lineCount);
@@ -976,6 +1050,9 @@ var Sketch = (function() {
 		}*/
 		
 	}
+	
+	
+	
 	
 	function stroke( thickness ) {
 		// Draw this line
