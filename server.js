@@ -124,15 +124,19 @@ this.now.uuid = ++primaryKey;
  everyone.now.endDrawClient();
  };
  
- everyone.now.syncDraw = function( position ){
-  console.log( "drawing" );
+ everyone.now.sendToServer=function(lines){
+ everyone.now.remoteDraw(lines);
+ }
+ 
+ everyone.now.syncDraw = function( positionX,positionY ){
+  console.log( positionX + ","  + positionY  );
  // Now that we have the new position, we want to broadcast
  // this back to every client except the one that sent it in
  // the first place! As such, we want to perform a server-side
  // filtering of the clients. To do this, we will use a filter
  // method which filters on the UUID we assigned at connection
  // time.
- everyone.now.filterUpdateDraw( this.now.uuid, position );
+ everyone.now.filterUpdateDraw( this.now.uuid, positionX,positionY );
 
  };
   
@@ -182,8 +186,7 @@ everyone.now.updatePosition( position );
 
 
 
-everyone.now.filterUpdateDraw = function( masterUUID, position ){
- console.log( "filter draw" );
+everyone.now.filterUpdateDraw = function( masterUUID, positionX,positionY ){
 // Make sure this client is NOT the same client as the one
 // that sent the original position broadcast.
 if (this.now.uuid == masterUUID){
@@ -199,7 +202,7 @@ return;
  
 // If we've made it this far, then this client is a slave
 // client, not a master client.
-everyone.now.updateDraw( position );
+everyone.now.updateDraw( positionX,positionY );
  
 };
  

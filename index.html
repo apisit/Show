@@ -1,172 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+<meta charset="utf-8"> 
+ 
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+
+<meta name="description" content="Show" />
+<meta name="author" content="Apisit Toompakdee" />
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width = 980" />
     <title>shareboard</title>
-    <link rel="stylesheet" type="text/css" href="reset.css" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
-	<script src="js/libs/jquery-1.4.2.min.js" type="application/javascript"></script>
-	<script src="js/libs/jquery-ui-1.8.custom.min.js" type="application/javascript"></script>
-	<script src="js/libs/console.js" type="application/javascript"></script>
-	<script src="js/libs/base64.js" type="application/javascript"></script>
-	<script src="js/libs/canvas2image.js" type="application/javascript"></script>
-	<script src="js/whiteboard.js" type="application/javascript"></script>
-	<script src="js/whiteboardui.jquery.js" type="application/javascript"></script>
-	
+    
+  <link href="reset.css" rel="stylesheet" media="screen" />
+  	<link href="main.css" rel="stylesheet" media="screen" />
+  
+
+
+
 <script type="text/javascript" src="/nowjs/now.js"></script>
-   
-<script type="text/javascript">//<![CDATA[
-// Init the script after document ready
-    
-
-    
-      // Get a reference to the target draggable.
   
 
-$(document).ready(function(){
-
-
-var canvas = $( "#canvas-container" );
-  
-var body = $( "body" );
-
-
-
-// On mouse-down, turn on draggability.
-canvas.mousedown(
-function( event ){
-// Prevent the default behavior.
-var eStartPosition = new jQuery.Event("click");
-eStartPosition.clientX = event.clientX;
-eStartPosition.clientY = event.clientY;
-now.beginDrawServer(eStartPosition);
-// Start tracking the mouse movement on the body.
-// We're tracking on the body so that the mouse can
-// move faster than the tracking.
-canvas.mousemove(
-function( event ){
-var eStart = new jQuery.Event("click");
-eStart.clientX = event.clientX;
-eStart.clientY = event.clientY;
-now.syncDraw( eStart );
-}
-);
-
-}
-);
- 
- 
-// On mouse-up, turn off draggability.
-canvas.mouseup(
-function( event ){
-now.endDrawServer();
-canvas.unbind( "mousemove" );
-}
-);
-
-now.beginDrawClient=function (position) {
-
-var eStartPosition = new jQuery.Event("click");
-                  eStartPosition.clientX = position.clientX;
-                  eStartPosition.clientY = position.clientY;
-
-                  WhiteboardUi.beginPencilDraw(eStartPosition);
-                  
-};
-
-now.endDrawClient=function () {
-  WhiteboardUi.endPencilDraw();
-};
-
-            
-now.updateDraw = function( position ){
-                 
-    WhiteboardUi.autoDraw(position);
-};
-                    
-
-	WhiteboardUi.init($("#canvas"));
-                  
-     
-             WhiteboardUi.activatePencil(); 
-                  //alert(WhiteboardUi.getX(event));
-           /*       Whiteboard.beginPencilDraw(WhiteboardUi.getX(event), WhiteboardUi.getY(event));
-                  
-                  
-                  WhiteboardUi.canvasElement.bind("mousemove", function(event) {
-                                                  
-                                                                                       
-                                                  
-                                                  Whiteboard.pencilDraw(WhiteboardUi.getX(event), WhiteboardUi.getY(event));
-                                                  now.syncDraw(event);      
-                                                  
-                                                  });
-                  WhiteboardUi.canvasElement.bind("mouseup", WhiteboardUi.endPencilDraw);
-                  WhiteboardUi.canvasElement.bind("mouseout", WhiteboardUi.endPencilDraw);
-                    WhiteboardUi.endPencilDraw();
-                  var eStart = new jQuery.Event("click");
-                  eStart.clientX = 0;
-                  eStart.clientY = 0;
-
-                  WhiteboardUi.beginPencilDraw(eStart);
-                  for (i=0;i<=100;i++)
-                  {
-                  var e = new jQuery.Event("click");
-                  e.clientX = i;
-                  e.clientY = i;
-                  WhiteboardUi.autoDraw(e);
-                  } 
-                 
-                  WhiteboardUi.endPencilDraw();*/
-                 
-                  
-});
-
-
-</script>
 </head>
 <body>
-<div id="container">
-  <!--  <div id="tools">
-        <button id="button_pencil" type="button" id="drawpolyline">pencil</button>
-        <input id="input_color" type="text" name="color" size="7" value="#000000" maxlength="7" />
-        <button id="button_color" type="button">choose color</button>
-        <button id="button_eraser" type="button">eraser</button>
-	    <div>
-	    	<button id="button_shape" type="button">shape</button>
-	    	<div id="shape_menu">
-	    		<button id="button_rectangle" type="button">rectagle</button>
-	    		<button id="button_oval" type="button">oval</button>
-	    	</div>
-	    </div>
-        <button id="button_zoom" type="button">Zoom</button>
-        <button id="button_rotate" type="button">rotate</button>
-        <input id="input_rotation" type="text" name="rotation" size="3" value="90" maxlength="3" />
-        <span>degrees</span>
-        <button id="button_animate" type="button">animate</button>
-        <button id="button_undo" type="button" onmousedown="Whiteboard.undo()">undo</button>
-    	<div>
-	    	<button id="button_saveas" type="button">save as</button>
-	    	<div id="saveas_menu">
-	    		<button id="button_savepng" type="button">png</button>
-	    		<button id="button_savejpeg" type="button">jpeg</button>
-	    		<button id="button_savebmp" type="button">bmp</button>
-	    	</div>
-	    </div>
-    </div> --><!-- /tools -->
-	<div id="drawsection">
-	    <div id="canvas-container">
-	        <canvas id="canvas"></canvas>
-	    </div>
-	</div><!-- /drawsection -->
-    <div id="zoom_element">
-    	<div id="zoom_amount">0%</div>
-		<div id="zoom_section">
-	    	<div id="zoom_bar"></div>
-	    	<div id="zoom_slider"></div>
-	    </div>
+<header>
+	<h1>Sketch</h1>
+
+
 	</div>
-</div> <!-- /container -->
+</header>
+<div id="options">
+	<a id="save-button" class="switch" title="Save &amp; Share" href="#" name="save-button">Save &amp; Share</a>
+	<a id="reset-button" class="switch" title="Reset" href="#" name="reset-button">Reset</a>
+	<a id="dash-toggle" class="switch" title="Dash" href="#" name="dash-toggle">Dash: <span>OFF</span></a>
+	
+	
+	<div id="size-dropdown" class="dropdown">
+		<div id="size-dropdown-title" class="dropdown-title"><span>Size:</span></div>
+		<div id="size-dropdown-list" class="dropdown-list">
+			<ul>
+				<li><a href="#" data-value="0.5">0.5 px</a></li>
+				<li><a href="#" data-value="1">1 px</a></li>
+				<li><a href="#" data-value="2">2 px</a></li>
+				<li><a href="#" data-value="3">3 px</a></li>
+				<li><a href="#" data-value="4">4 px</a></li>
+				<li><a href="#" data-value="5">5 px</a></li>
+				<li><a href="#" data-value="6">6 px</a></li>
+				<li><a href="#" data-value="7">7 px</a></li>
+				<li><a href="#" data-value="8">8 px</a></li>
+				<li><a href="#" data-value="9">9 px</a></li>
+			</ul>
+		</div>
+	</div>
+	
+
+</div>
+
+<canvas id="world">
+	<p class="noCanvas">You need a <a href="http://www.google.com/chrome">modern browser</a> to view this.</p>
+</canvas>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script src="js/hakim.dropdown.js"></script>
+ <script src="js/hakim.sketch.js"></script>
 </body>
+
 </html>
 
